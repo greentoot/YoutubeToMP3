@@ -1,9 +1,5 @@
 using System.Diagnostics;
 using System.Net;
-using MediaToolkit.Model;
-using MediaToolkit;
-using YoutubeExplode;
-using YoutubeExplode.Videos.Streams;
 using Newtonsoft.Json;
 using System.Reflection;
 
@@ -11,7 +7,7 @@ namespace YoutubeToMP3
 {
     public partial class Form1 : Form
     {
-        private readonly Version _version = Assembly.GetExecutingAssembly().GetName().Version;
+        private readonly Version _version = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0, 0);
         private string repoOwner = "PackJC"; // Replace with your GitHub username
         private string repoName = "YoutubeToMP3"; // Replace with your repository name
         string currentVersion;
@@ -45,7 +41,10 @@ namespace YoutubeToMP3
             List<string> urls = new List<string>();
             foreach (var item in urlListBox.Items)
             {
-                urls.Add(item.ToString());
+                if (item is not null)
+                {
+                    urls.Add(item.ToString()!);
+                }
             }
 
             foreach (var url in urls)
@@ -270,7 +269,7 @@ namespace YoutubeToMP3
 
         }
 
-        private void downloadSingleButton_Click(object sender, EventArgs e)
+        private async void downloadSingleButton_Click(object sender, EventArgs e)
         {
             string fileType = "";
 
@@ -287,11 +286,7 @@ namespace YoutubeToMP3
                 fileType = "aac"; // Define your file type for radioButton3
             }
 
-            // Check if the thumbnail should be downloaded
-            bool downloadThumbnail = thumbnailCheckbox.Checked;
-
-            // Call the download method with the selected file type and thumbnail option
-            download.DownloadAsync(urlBox.Text, progressBar, fileType);
+            await download.DownloadAsync(urlBox.Text, progressBar, fileType);
 
 
         }

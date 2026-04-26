@@ -3,3 +3,30 @@
 
  
  This Windows Forms application in C# allows users to download YouTube videos as MP3 files. Users can enter a YouTube URL, and upon clicking the download button, the app uses YoutubeExplode to fetch and download the video. A progress bar updates in real-time, showing the download progress. After downloading, the app converts the video to MP3 using MediaToolkit. Users choose the save location for the MP3 file via a SaveFileDialog. A completion notification pops up once the process is complete. This app provides a user-friendly way to convert YouTube videos into MP3s directly from the desktop.
+
+## Requirements
+
+- .NET 7 SDK or runtime
+- FFmpeg installed and available in `PATH`
+
+## Running Locally
+
+```powershell
+dotnet restore
+dotnet run --project .\YoutubeToMP3.csproj
+```
+
+## Fork Fixes
+
+This fork includes a compatibility fix for recent YouTube extraction failures:
+
+- updated `YoutubeExplode` from `6.3.14` to `6.5.7`
+- added `System.Text.Encoding.CodePages` to satisfy the runtime dependency required by `AngleSharp`
+- switched the download path from muxed streams to audio-only streams, which is a better fit for MP3/OGG/AAC conversion
+
+These changes fix errors such as:
+
+```text
+Failed to extract the cipher manifest.
+The type initializer for 'YoutubeExplode.Utils.Html' threw an exception.
+```
